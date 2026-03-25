@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<StackPane fx:id="rootContainer" alignment="TOP_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gardensim.controllers.GardenController">
+   <children>
+      <StackPane fx:id="mainStackPane" alignment="TOP_LEFT" prefHeight="150.0" prefWidth="200.0">
+         <children>
+            <GridPane fx:id="mainGrid" alignment="CENTER">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+            </GridPane>
+            <Pane fx:id="leafOverlay" prefHeight="200.0" prefWidth="200.0" />
+         </children>
+      </StackPane>
+      <VBox fx:id="dashboard" fillWidth="false">
+         <children>
+            <Text fx:id="dashboardTitle" strokeType="OUTSIDE" strokeWidth="0.0" text="Control Dashboard">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Text>
+            <VBox alignment="CENTER_LEFT">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Nightshade Family" />
+                  <TextField fx:id="nightshades" alignment="TOP_LEFT" promptText="# of random Plants" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Nightshade - Tomato">
+                     <VBox.margin>
+                        <Insets left="15.0" />
+                     </VBox.margin>
+                  </Text>
+                  <TextField fx:id="nsTomato" alignment="TOP_LEFT" promptText="# of Tomatoes">
+                     <VBox.margin>
+                        <Insets left="15.0" />
+                     </VBox.margin>
+                  </TextField>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Nightshade - Chili pepper">
+                     <VBox.margin>
+                        <Insets left="15.0" />
+                     </VBox.margin>
+                  </Text>
+                  <TextField fx:id="nsChiliPepper" alignment="TOP_LEFT" promptText="# of Chili Peppers">
+                     <VBox.margin>
+                        <Insets left="15.0" />
+                     </VBox.margin>
+                  </TextField>
+               </children>
+            </VBox>
+            <VBox alignment="CENTER_LEFT">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Umbelliferae Family" />
+                  <TextField fx:id="umbelliferae" alignment="TOP_LEFT" promptText="# of random Plants" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Umbelliferae - Carrot">
+                     <VBox.margin>
+                        <Insets left="15.0" />
+                     </VBox.margin>
+                  </Text>
+                  <TextField fx:id="umCarrot" alignment="TOP_LEFT" promptText="# of Carrots">
+                     <VBox.margin>
+                        <Insets left="15.0" />
+                     </VBox.margin>
+                  </TextField>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Umbelliferae - Cow Parsley">
+                     <VBox.margin>
+                        <Insets left="15.0" />
+                     </VBox.margin>
+                  </Text>
+                  <TextField fx:id="umCowParsley" alignment="TOP_LEFT" promptText="# of Cow Parsley">
+                     <VBox.margin>
+                        <Insets left="15.0" />
+                     </VBox.margin>
+                  </TextField>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Umbelliferae - Coriander">
+                     <VBox.margin>
+                        <Insets left="15.0" />
+                     </VBox.margin>
+                  </Text>
+                  <TextField fx:id="umCoriander" alignment="TOP_LEFT" promptText="# of Coriander">
+                     <VBox.margin>
+                        <Insets left="15.0" />
+                     </VBox.margin>
+                  </TextField>
+               </children>
+            </VBox>
+            <VBox alignment="CENTER_LEFT">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Cruciferae Family" />
+                  <TextField fx:id="cruciferae" alignment="TOP_LEFT" promptText="# of random Plants" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Cruciferae - Kale">
+                     <VBox.margin>
+                        <Insets left="15.0" />
+                     </VBox.margin>
+                  </Text>
+                  <TextField fx:id="crKale" alignment="TOP_LEFT" promptText="# of Kale">
+                     <VBox.margin>
+                        <Insets left="15.0" />
+                     </VBox.margin>
+                  </TextField>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Cruciferae - Radish">
+                     <VBox.margin>
+                        <Insets left="15.0" />
+                     </VBox.margin>
+                  </Text>
+                  <TextField fx:id="crRadish" alignment="TOP_LEFT" promptText="# of Radishes">
+                     <VBox.margin>
+                        <Insets left="15.0" />
+                     </VBox.margin>
+                  </TextField>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Cruciferae - Cabbage">
+                     <VBox.margin>
+                        <Insets left="15.0" />
+                     </VBox.margin>
+                  </Text>
+                  <TextField fx:id="crCabbage" alignment="TOP_LEFT" promptText="# of Cabbages">
+                     <VBox.margin>
+                        <Insets left="15.0" />
+                     </VBox.margin>
+                  </TextField>
+               </children>
+            </VBox>
+            <Button fx:id="buttonConfirm" mnemonicParsing="false" onAction="#onConfirmClick" text="Confirm Selection">
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+            </Button>
+            <Button fx:id="buttonStartPause" mnemonicParsing="false" onAction="#onStartPauseClick" text="Start">
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+            </Button>
+            <Button fx:id="buttonStop" mnemonicParsing="false" onAction="#onStopClick" text="Stop">
+               <VBox.margin>
+                  <Insets bottom="10.0" top="10.0" />
+               </VBox.margin>
+            </Button>
+         </children>
+      </VBox>
+      <VBox fx:id="dashboard1" fillWidth="false">
+         <children>
+            <Text fx:id="dashboardTitle1" strokeType="OUTSIDE" strokeWidth="0.0" text="Events">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Text>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Button fx:id="buttonConfirm1" mnemonicParsing="false" onAction="#onRainClick" text="Rain" />
+                  <TextField fx:id="rain" prefWidth="100.0" promptText="Rain Amount" />
+               </children></HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#onInfestClick" text="Infest" />
+                  <ComboBox fx:id="spawnPests" />
+               </children>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Button fx:id="buttonStop1" mnemonicParsing="false" onAction="#onTempClick" text="Temp" />
+                  <TextField fx:id="temp" prefWidth="100.0" promptText="Temp in F" />
+               </children>
+            </HBox>
+         </children>
+         <StackPane.margin>
+            <Insets right="10.0" />
+         </StackPane.margin>
+      </VBox>
+   </children>
+</StackPane>

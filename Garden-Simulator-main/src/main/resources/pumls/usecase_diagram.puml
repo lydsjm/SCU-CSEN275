@@ -1,0 +1,124 @@
+@startuml GardenSimulatorUseCaseDiagram
+title Garden Simulator - Use Case Diagram
+
+left to right direction
+skinparam actorStyle awesome
+
+actor "User" as user
+
+rectangle "Garden Simulator" {
+
+  ' === Setup Use Cases ===
+  package "Setup" {
+    usecase "Launch Application" as UC_Launch
+    usecase "Enter Plant Counts" as UC_Enter
+    usecase "Confirm Plant Selection" as UC_Confirm
+    usecase "Place Plants on Grid" as UC_Place
+    usecase "Move Plants" as UC_Move
+  }
+
+  ' === Simulation Control Use Cases ===
+  package "Simulation Control" {
+    usecase "Start Simulation" as UC_Start
+    usecase "Pause/Resume Simulation" as UC_PauseResume
+    usecase "Stop Simulation" as UC_Stop
+    usecase "View Death Report" as UC_Report
+  }
+
+  ' === User Event Use Cases ===
+  package "User Events" {
+    usecase "Trigger Rain" as UC_Rain
+    usecase "Change Greenhouse\nTemperature" as UC_ChangeTemp
+    usecase "Infest Garden\nwith Pest" as UC_Infest
+  }
+
+  ' === Monitoring Use Cases ===
+  package "Monitoring" {
+    usecase "View Plant Health\nand Water Levels" as UC_ViewStatus
+    usecase "View Current\nTemperature" as UC_ViewTemp
+    usecase "View Active Pests" as UC_ViewPests
+    usecase "View Simulation\nStatus" as UC_ViewSim
+  }
+
+  ' === Temperature Control System ===
+  package "Temperature Control System" {
+    usecase "Sense Greenhouse\nTemperature" as UC_SenseTemp
+    usecase "Activate Heater" as UC_Heat
+    usecase "Activate Cooler" as UC_Cool
+    usecase "Regulate Temperature\nto 80°F Target" as UC_RegTemp
+  }
+
+  ' === Watering Control System ===
+  package "Watering Control System" {
+    usecase "Sense Plant\nWater Levels" as UC_SenseWater
+    usecase "Activate Sprinklers" as UC_Sprinkler
+    usecase "Refill Water\nReservoir" as UC_Refill
+    usecase "Maintain Plant\nHydration" as UC_Hydrate
+  }
+
+  ' === Pest Control System ===
+  package "Pest Control System" {
+    usecase "Detect Active Pests" as UC_DetectPest
+    usecase "Deploy Pesticide" as UC_Pesticide
+    usecase "Manage Pesticide\nInventory" as UC_Inventory
+  }
+
+  ' === Plant Management ===
+  package "Plant Lifecycle" {
+    usecase "Update Plant Health" as UC_Health
+    usecase "Apply Damage\n(Pest/Temp/Water)" as UC_Damage
+    usecase "Apply Natural Healing" as UC_Heal
+    usecase "Remove Dead Plants" as UC_RemoveDead
+  }
+}
+
+' === User Associations ===
+user --> UC_Launch
+user --> UC_Enter
+user --> UC_Confirm
+user --> UC_Move
+user --> UC_Start
+user --> UC_PauseResume
+user --> UC_Stop
+user --> UC_Rain
+user --> UC_ChangeTemp
+user --> UC_Infest
+user --> UC_ViewStatus
+user --> UC_ViewTemp
+user --> UC_ViewPests
+user --> UC_ViewSim
+user --> UC_Report
+
+' === Relationships ===
+
+' Setup flow
+UC_Confirm ..> UC_Place : <<include>>
+UC_Launch ..> UC_Enter : <<include>>
+UC_Stop ..> UC_Report : <<include>>
+
+' Temperature Control System relationships
+UC_RegTemp ..> UC_SenseTemp : <<include>>
+UC_RegTemp ..> UC_Heat : <<extend>>
+UC_RegTemp ..> UC_Cool : <<extend>>
+
+' Watering Control System relationships
+UC_Hydrate ..> UC_SenseWater : <<include>>
+UC_Hydrate ..> UC_Sprinkler : <<extend>>
+UC_Rain ..> UC_Refill : <<include>>
+
+' Pest Control System relationships
+UC_DetectPest ..> UC_Pesticide : <<extend>>
+UC_Pesticide ..> UC_Inventory : <<include>>
+
+' Plant Lifecycle relationships
+UC_Health ..> UC_Damage : <<extend>>
+UC_Health ..> UC_Heal : <<extend>>
+UC_Health ..> UC_RemoveDead : <<extend>>
+
+' Simulation triggers control systems
+UC_Start ..> UC_RegTemp : <<include>>
+UC_Start ..> UC_Hydrate : <<include>>
+UC_Start ..> UC_DetectPest : <<include>>
+UC_Start ..> UC_Health : <<include>>
+
+@enduml

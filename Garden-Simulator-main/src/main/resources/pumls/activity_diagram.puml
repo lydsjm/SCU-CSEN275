@@ -1,0 +1,117 @@
+@startuml GardenSimulatorActivityDiagram
+title Garden Simulator - Activity Diagram
+
+start
+
+:User runs program;
+note right: Launcher.main() → Application.start()
+
+:Load GUI (View.fxml);
+:Initialize garden grid (20x30);
+:Display dashboard with plant input fields;
+
+:User enters plant counts\n(Nightshade, Cruciferae, Umbelliferae);
+
+:User clicks "Confirm Selection";
+
+:Clear garden grid;
+:Randomly place plants on grid\n(avoiding 1-tile border);
+:Attach health and water progress bars;
+:Enable Start/Pause and Stop buttons;
+
+:User optionally moves plants\nby clicking and repositioning;
+
+:User clicks "Start";
+
+:Create simulation timeline\n(1000ms per tick);
+
+repeat
+  :Advance time (increment tick counter);
+
+  fork
+    :TemperatureSystem.update();
+    note right
+      **Sensor:** Read current greenhouse temp
+      **Controller:** Compare to 80°F target (±4°F deadband)
+      **Actuator:**
+      - Temp > 84°F → Activate cooler (−1.9°F)
+      - Temp < 76°F → Activate heater (+1.9°F)
+      - 76–84°F → Systems off
+    end note
+  fork again
+    :WateringSystem.update();
+    note right
+      **Sensor:** Read each plant's water level
+      **Controller:** Check if water < 70% threshold
+      **Actuator:** Sprinkler refills plant to 100%
+      (draws from water reservoir)
+    end note
+  fork again
+    :PestControlSystem.update();
+    note right
+      **Sensor:** Detect active pests in garden
+      **Controller:** Randomly select one pest type
+      **Actuator:** Deploy pesticide if inventory > 0
+      (removes pest, decrements inventory)
+    end note
+  end fork
+
+  :Update all plants;
+
+  partition "Per-Plant Update" {
+    :Decrease water level by 0.05\n(every 20 ticks);
+
+    if (Plant has vulnerable pests?) then (yes)
+      :Apply pest damage (0.0005/pest);
+    endif
+
+    if (Temperature out of plant's range?) then (yes)
+      :Apply temperature damage (0.0001);
+    endif
+
+    if (Water level < 1?) then (yes)
+      :Apply dehydration damage (0.0004);
+    endif
+
+    if (No damage taken this tick?) then (yes)
+      :Apply natural healing (+0.002);
+    endif
+
+    if (Health <= 0?) then (yes)
+      :Mark plant as dead;
+      :Remove from grid;
+    endif
+  }
+
+  :Move farmer sprite randomly;
+
+  fork
+    :User triggers Rain event;
+    :WateringSystem.rain(amount)\nRefill all plants + recharge reservoir;
+  fork again
+    :User changes Temperature;
+    :Set greenhouse temp to new value;
+  fork again
+    :User triggers Pest Infestation;
+    :Add selected pest to garden;
+  end fork
+
+  if (All plants dead?) then (yes)
+    :Auto-stop simulation;
+    detach
+  endif
+
+  if (User clicks "Pause"?) then (yes)
+    :Pause timeline;
+    :User clicks "Resume";
+  endif
+
+repeat while (User clicks "Stop"?) is (no)
+
+:Stop simulation timeline;
+:Clear garden;
+:Display death report\n(cause of death per plant);
+
+stop
+
+@enduml

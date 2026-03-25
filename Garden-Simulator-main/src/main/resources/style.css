@@ -1,0 +1,64 @@
+.tile{
+    -fx-border-color: red;
+    -fx-border-width: 10;
+    -fx-background-color: rgba(255,0,0,0.3);
+}
+
+.hydration-bar{
+    -fx-pref-width: 45px;
+    -fx-pref-height: 5px;
+}
+.hydration-bar > .bar {
+   -fx-background-color: linear-gradient(to right, #1e3c72, #2a5298, #6dd5ed);
+    -fx-background-insets: 0;
+    -fx-background-radius: 2;
+}
+
+.hydration-bar > .track {
+    -fx-background-color: rgba(0,0,0,0.5);
+    -fx-background-insets: 0;
+    -fx-background-radius: 2;
+}
+
+.health-bar{
+    -fx-pref-width: 45px;
+    -fx-pref-height: 5px;
+}
+.health-bar > .bar {
+    -fx-background-color: linear-gradient(to right, #862633, #a32035);
+    -fx-background-insets: 0;
+    -fx-background-radius: 2;
+}
+
+.health-bar > .track {
+    -fx-background-color: rgba(0,0,0,0.5);
+    -fx-background-insets: 0;
+    -fx-background-radius: 2;
+}
+
+.dashboard-panel {
+    -fx-max-width: 200px;
+    -fx-spacing: 15px;
+    -fx-padding: 20px;
+    -fx-background-color: rgba(255,255,255,0.6);
+    -fx-background-radius: 15px;
+}
+
+.status-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-background-color: rgba(0,0,0,0.5);
+    -fx-padding: 10px 20px 10px 20px;
+    -fx-background-radius: 15;
+    -fx-text-alignment: center;
+    -fx-alignment: center;
+}
+
+.status-label.running {
+    -fx-background-color: rgba(0,255,0,0.5);
+}
+
+.status-label.paused {
+    -fx-background-color: rgba(255,0,0,0.5);
+}

@@ -1,0 +1,166 @@
+@startuml GardenSimulatorObjectDiagram
+title Garden Simulator - Object Diagram\n(Snapshot during active simulation)
+
+' === Garden Instance ===
+object ":Garden" as garden {
+  ROWS = 20
+  COLS = 30
+  currentDay = 3
+  currentTick = 247
+  ticksSinceLastRain = 102
+  currentGreenHouseTemp = 82.5
+  storedWaterInLiters = 98450.0
+}
+
+' === Control Systems ===
+object ":TemperatureSystem" as tempSys {
+  cooler = false
+  heater = false
+  targetTemp = 80.0
+  tempChangeRate = 1.9
+  tempBuffer = 4
+}
+
+object ":WateringSystem" as waterSys {
+  lastRainDay = 2
+}
+
+object ":PestControlSystem" as pestSys {
+}
+
+' === Pesticide Inventory (Map<Pest, Integer>) ===
+object "pesticideInv\n:Map<Pest, Integer>" as pestInv {
+  APHIDS = 8
+  SCALE = 10
+  BEETLE = 9
+  CATERPILLAR = 10
+  SNAIL = 7
+}
+
+' === Active Pests ===
+object "currentPests\n:ObservableList<Pest>" as pestList {
+  [0] = APHIDS
+  [1] = BEETLE
+}
+
+' === Plant Grid ===
+object "gardenLogicMap\n:Plant[20][30]" as grid {
+  "18x28 playable interior"
+  "1-tile border = path"
+}
+
+' === Nightshade Plants ===
+object "tomato1 :Nightshade" as tomato1 {
+  displayName = "Tomato"
+  type = TOMATO
+  tempRange = [75, 90]
+  waterRequirements = 2
+  waterLevel = 1.85
+  healthLevel = 0.94
+  alive = true
+  ticksSinceWatered = 14
+  pests = [APHIDS, SCALE]
+}
+
+object "chili1 :Nightshade" as chili1 {
+  displayName = "ChiliPepper"
+  type = CHILIPEPPER
+  tempRange = [75, 95]
+  waterRequirements = 2
+  waterLevel = 2.0
+  healthLevel = 1.0
+  alive = true
+  ticksSinceWatered = 3
+  pests = [APHIDS, SCALE]
+}
+
+' === Cruciferae Plants ===
+object "kale1 :Cruciferae" as kale1 {
+  displayName = "Kale"
+  type = KALE
+  tempRange = [70, 85]
+  waterRequirements = 2
+  waterLevel = 1.40
+  healthLevel = 0.87
+  alive = true
+  ticksSinceWatered = 18
+  pests = [APHIDS, BEETLE]
+}
+
+object "cabbage1 :Cruciferae" as cabbage1 {
+  displayName = "Cabbage"
+  type = CABBAGE
+  tempRange = [70, 85]
+  waterRequirements = 3
+  waterLevel = 2.10
+  healthLevel = 0.91
+  alive = true
+  ticksSinceWatered = 6
+  pests = [APHIDS, BEETLE]
+}
+
+object "radish1 :Cruciferae" as radish1 {
+  displayName = "Radish"
+  type = RADISH
+  tempRange = [65, 85]
+  waterRequirements = 1
+  waterLevel = 0.75
+  healthLevel = 0.78
+  alive = true
+  ticksSinceWatered = 19
+  pests = [APHIDS, BEETLE]
+}
+
+' === Umbelliferae Plants ===
+object "carrot1 :Umbelliferae" as carrot1 {
+  displayName = "Carrot"
+  type = CARROT
+  tempRange = [70, 85]
+  waterRequirements = 1
+  waterLevel = 0.95
+  healthLevel = 0.96
+  alive = true
+  ticksSinceWatered = 8
+  pests = [BEETLE, SNAIL]
+}
+
+object "coriander1 :Umbelliferae" as coriander1 {
+  displayName = "Coriander"
+  type = CORIANDER
+  tempRange = [70, 90]
+  waterRequirements = 1
+  waterLevel = 0.0
+  healthLevel = 0.0
+  alive = false
+  ticksSinceWatered = 247
+  pests = [BEETLE, SNAIL]
+}
+
+' === Death Toll ===
+object "deathToll\n:Map<String, Integer>" as deathToll {
+  "Coriander" = 1
+}
+
+' === Relationships ===
+garden *-- tempSys : tempSystem
+garden *-- waterSys : wateringSystem
+garden *-- pestSys : pestSystem
+garden *-- pestInv : pesticideInv
+garden *-- pestList : currentPests
+garden *-- grid : gardenLogicMap
+garden *-- deathToll : deathToll
+
+grid -- tomato1 : "[5][10]"
+grid -- chili1 : "[3][14]"
+grid -- kale1 : "[8][7]"
+grid -- cabbage1 : "[12][20]"
+grid -- radish1 : "[6][16]"
+grid -- carrot1 : "[15][9]"
+grid -- coriander1 : "[10][22] (dead)"
+
+tempSys .. garden : monitors\ngreenhouse temp
+waterSys .. garden : monitors\nplant water levels
+pestSys .. pestList : selects random\npest to treat
+pestSys .. pestInv : consumes\npesticide
+
+@enduml

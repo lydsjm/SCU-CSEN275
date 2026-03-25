@@ -1,0 +1,213 @@
+@startuml GardenSimulatorSequenceDiagram
+title Garden Simulator - Sequence Diagram
+
+actor User
+participant "Launcher" as L
+participant "Application" as App
+participant "GardenController" as GC
+participant "Garden" as G
+participant "Plant" as P
+participant "TemperatureSystem" as TS
+participant "WateringSystem" as WS
+participant "PestControlSystem" as PS
+
+== Application Startup ==
+
+User -> L: main()
+L -> App: Application.launch()
+App -> App: start(Stage)
+App -> App: FXMLLoader.load("View.fxml")
+App -> GC: initialize()
+GC -> GC: initializeTextFields()
+GC -> GC: fillGardenPlot(20, 30)
+GC -> GC: createStatusBar("READY")
+note right of GC: GUI displayed with\nempty 20x30 grid
+
+== Plant Setup ==
+
+User -> GC: Enter plant counts\n(TextField inputs)
+GC -> GC: validateTotal()
+
+User -> GC: onConfirmClick()
+GC -> GC: deselectPlant()
+GC -> GC: clearGarden()
+GC -> G: clearGarden()
+
+loop for each plant type with count > 0
+  GC -> GC: plantFamily(count, plantSupplier, rand)
+  loop count times
+    GC -> G: getPlantAt(r, c)
+    G --> GC: null (empty slot)
+    create P
+    GC -> P: new Plant(name, tempRange, waterReq, pests)
+    GC -> G: setPlantAt(r, c, plant)
+    GC -> P: getWaterProgressBar()
+    GC -> P: getHealthProgressBar()
+    GC -> P: getaliveProperty().addListener()
+    note right of GC: Attach health/water bars\nand death listener
+  end
+end
+
+note right of GC: Start/Stop buttons enabled.\nUser can move plants.
+
+== Optional: Move Plants ==
+
+User -> GC: Click on plant
+GC -> GC: movePlant() handler
+GC -> GC: showPlacementGrid(true)
+User -> GC: Click on empty tile
+GC -> GC: moveSelectedPlantTo(row, col)
+GC -> G: setPlantAt(oldRow, oldCol, null)
+GC -> G: setPlantAt(newRow, newCol, plant)
+GC -> GC: deselectPlant()
+
+== Start Simulation ==
+
+User -> GC: onStartPauseClick()
+GC -> GC: setInputsDisabled(true, false)
+GC -> GC: new Timeline(1000ms KeyFrame)
+GC -> GC: simulationTimeline.play()
+GC -> GC: createStatusBar("RUNNING")
+
+== Simulation Loop (every 1000ms tick) ==
+
+loop every 1000ms (Timeline KeyFrame)
+
+  GC -> G: advanceTime()
+  G -> G: updateTick()
+  G -> G: updateRainTick()
+
+  GC -> G: updateAllPlants()
+
+  == Control Systems Update ==
+
+  G -> G: updateAllSystems()
+
+  G -> TS: update(garden)
+  TS -> G: getCurrentGreenHouseTemp()
+  G --> TS: currentTemp
+  alt temp > 84°F (targetTemp + buffer)
+    TS -> G: setCurrentGreenHouseTemp(temp - 1.9)
+    note right of TS: Cooler activated
+  else temp < 76°F (targetTemp - buffer)
+    TS -> G: setCurrentGreenHouseTemp(temp + 1.9)
+    note right of TS: Heater activated
+  else 76°F <= temp <= 84°F
+    note right of TS: Systems off (within deadband)
+  end
+
+  G -> WS: update(garden)
+  WS -> WS: waterAllPlants(garden)
+  loop for each plant in grid
+    WS -> G: getPlantAt(r, c)
+    G --> WS: plant
+    WS -> P: getWaterLevel()
+    P --> WS: waterLevel
+    WS -> P: getWaterRequirements()
+    P --> WS: waterReq
+    alt waterLevel < waterReq * 0.7
+      WS -> G: getStoredWaterInLiters()
+      G --> WS: reservoir
+      alt reservoir >= amountNeeded
+        WS -> P: setWaterLevel(waterReq)
+        WS -> G: setStoredWaterInLiters(reservoir - amountNeeded)
+      end
+    end
+  end
+
+  G -> PS: update(garden)
+  PS -> G: getCurrentPests()
+  G --> PS: currentPests
+  alt pests not empty
+    PS -> PS: randomPest = random selection
+    PS -> PS: deployTreatment(garden, randomPest)
+    PS -> G: usePesticide(pest)
+    alt pesticide inventory > 0
+      G --> PS: true
+      PS -> G: removePest(pest)
+    else no pesticide left
+      G --> PS: false
+    end
+  end
+
+  == Per-Plant Health Update ==
+
+  loop for each plant in grid
+    G -> P: getTicksSinceWatered()
+    alt ticksSinceWatered % 20 == 0
+      G -> P: setWaterLevel(waterLevel - 0.05)
+    end
+    G -> P: updateWaterProgressBar()
+    G -> P: updateHealth(currentTemp, currentPests)
+
+    alt health <= 0
+      P -> P: setalive(false)
+      P --> GC: aliveProperty listener fires
+      GC -> G: addDeath(plant)
+      GC -> G: setPlantAt(row, col, null)
+      GC -> GC: remove plant from UI
+    end
+
+    G -> P: setTicksSinceWatered(ticks + 1)
+  end
+
+  GC -> GC: moveFarmerRandomly()
+
+  alt currentTick % 100 == 0
+    GC -> G: setCurrentGreenHouseTemp(temp + random(-10, +10))
+    note right of GC: Random temperature variation
+  end
+
+  alt plantsAlive() == 0
+    GC -> GC: onStopClick()
+  end
+
+end
+
+== User Events (during simulation) ==
+
+opt User triggers rain
+  User -> GC: onRainClick()
+  GC -> WS: rain(garden, amount)
+  loop for each plant
+    WS -> P: setWaterLevel(waterLevel + amount)
+  end
+  WS -> G: setStoredWaterInLiters(stored + amount * 100)
+  GC -> G: resetRainTimer()
+end
+
+opt User changes temperature
+  User -> GC: onTempClick()
+  GC -> G: setCurrentGreenHouseTemp(newTemp)
+end
+
+opt User infests with pest
+  User -> GC: onInfestClick()
+  GC -> G: addPest(selectedPest)
+end
+
+== Pause / Resume ==
+
+opt User pauses
+  User -> GC: onStartPauseClick()
+  GC -> GC: simulationTimeline.pause()
+  GC -> GC: createStatusBar("PAUSED")
+  User -> GC: onStartPauseClick()
+  GC -> GC: simulationTimeline.play()
+  GC -> GC: createStatusBar("RUNNING")
+end
+
+== Stop Simulation ==
+
+User -> GC: onStopClick()
+GC -> GC: simulationTimeline.stop()
+GC -> GC: setInputsDisabled(false, true)
+GC -> G: setCurrentGreenHouseTemp(80)
+GC -> G: resetRainTimer()
+GC -> GC: clearGarden()
+GC -> G: clearGarden()
+GC -> G: getDeathReport()
+G --> GC: report
+GC -> User: Alert("Game Over", report)
+
+@enduml

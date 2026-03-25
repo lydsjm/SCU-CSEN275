@@ -1,0 +1,12 @@
+{
+  "plants": [
+    { "name": "Kale", "amount": 50 },
+    { "name": "Radish", "amount": 5 },
+    { "name": "Cabbage", "amount": 15 },
+    { "name": "Tomato", "amount": 50 },
+    { "name": "ChiliPepper", "amount": 5 },
+    { "name": "Carrot", "amount": 15 },
+    { "name": "CowParsley", "amount": 50 },
+    { "name": "Coriander", "amount": 5 }
+  ]
+}
